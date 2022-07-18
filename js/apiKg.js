@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import bluebird from 'bluebird'
+import { sleepTime } from './sleepTime.js';
 
 export async function getToken(){
     const body = {
@@ -32,6 +33,7 @@ export async function getDuplicatedDevicesInKG(devices, token){
             "credentialId":device.knox_credential_id,
             "search": device.serial
         }
+        console.log("Device atual: ",device.serial)
         let response
         try{
              response = await fetch('https://stnu67hm7i.execute-api.us-east-1.amazonaws.com/acceptance/kg/devices/list', {
@@ -52,8 +54,8 @@ export async function getDuplicatedDevicesInKG(devices, token){
             }
             else imeisDuplicated.push(device.serial)                           
         }
-        
-    },{ concurrency: Math.round(devices.length / 3) })
+        await sleepTime(2000)
+    },{ concurrency: 40 })
 
     console.log("Duplicados: ",imeisDuplicated.length)
     console.log("Não Duplicados ",imeisNotDuplicated.length)
