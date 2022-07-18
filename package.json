@@ -5,6 +5,7 @@
   "type": "module",
   "license": "MIT",
   "dependencies": {
+    "@soudi/allied-kernel": "^1.0.4",
     "bluebird": "^3.7.2",
     "dotenv": "^16.0.1",
     "exceljs": "^4.3.0",
