@@ -21,6 +21,8 @@ export async function connectionDB(){
     return conn?conn:null
 }
 
+
+
 export async function getDuplicatedDevicesInDB(connection){
     const query = `SELECT * FROM linxMovimentoSerial WHERE status_kdp = 'Duplicated' AND status_kg = 'Not Uploaded' ORDER BY 1 DESC;`
     let response;
@@ -37,17 +39,22 @@ export async function getDuplicatedDevicesInDB(connection){
 
 
 export async function updateStatus(connection,devices){
-     
-    const query = devices.map(device=>{
-        return `update linxMovimentoSerial set status_kdp = 'Verified', status_kg='${device.status}', status = '${statusFromSamsung(String(device.status).toLowerCase())}' where serial = '${device.deviceUid}'; `
-    }).join('')
-    try{         
-          await connection.query(query);                  
+    if(devices.length>0){
+        const query = devices.map(device=>{
+            return `update linxMovimentoSerial set status_kdp = 'Verified', status_kg='${device.status}', status = '${statusFromSamsung(String(device.status).toLowerCase())}' where serial = '${device.deviceUid}'; `
+        }).join('')
+        try{         
+              await connection.query(query);                  
+        }
+        catch(err){
+            connection.end();
+            throw err
+        }
+            connection.end();
+            console.log("==================Terminou os Updates================")
     }
-    catch(err){
-        connection.end();
-        throw err
+    else{
+        console.log("==================Não tem Devices Duplicados================")
     }
-        connection.end();
-        console.log("==================Terminou os Updates================")
+
 }
